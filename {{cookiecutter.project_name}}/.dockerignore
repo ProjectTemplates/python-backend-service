@@ -1,0 +1,23 @@
+# User
+
+# Git
+.git
+.gitignore
+
+# Caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.coverage
+.coverage.*
+
+# Docker
+docker/
+.dockerignore
+
+# Misc
+README.md
+setup.cfg
+Makefile
