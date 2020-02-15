@@ -4,5 +4,5 @@
     "database_driver": "postgresql+psycopg2",
     "database_port": "5432",
     "maintainer": "",
-    "maintainer_email": "",
+    "maintainer_email": ""
 }
