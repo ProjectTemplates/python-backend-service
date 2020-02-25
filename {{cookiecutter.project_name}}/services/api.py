@@ -64,4 +64,7 @@ class ResponsesContainer(dict):
         return result_responses
 
 
+# basic usage: `@api.post(..., responses=responses)`. Error response 400 with ErrorResponse model is added by default
+# `@api.post(..., responses=responses.extra('not_found')` - will add 404 code to default reponses
+# You can add new responses to the ResponsesContainer above
 responses = ResponsesContainer()
