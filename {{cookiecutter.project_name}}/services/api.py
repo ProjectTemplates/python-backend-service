@@ -31,6 +31,7 @@ def Error(error: Union[str, Dict, List, Tuple], code: int = 400) -> UJSONRespons
     return UJSONResponse(status_code=code, content=ErrorResponse(ok=False, error=error).dict())
 
 
+# You can use those to directly return an error - `return NotFoundError('No such object')`
 PermissionsError = partial(Error, code=403)
 NotFoundError = partial(Error, code=404)
 
