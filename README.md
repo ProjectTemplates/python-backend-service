@@ -4,7 +4,7 @@
 
 ## The ultimate backend service template
 
-> Use with cookiecutter: `cookiecutter https://github.com/ProjectTemplates/python-backend-service.git`
+> Use with cookiecutter: **`cookiecutter https://github.com/ProjectTemplates/python-backend-service.git`**
 
 Generates a foundation for a python server based on **FastAPI**, can optionally add **celery worker and celerybeat**. Uses **poetry** for dependency resolution.
 
