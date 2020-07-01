@@ -12,6 +12,8 @@ Generates a foundation for a python server based on **FastAPI**, can optionally 
 
 For storage supports **MongoDB, PostgreSQL (or any other SQL database with some tweaking) and Redis, or any combination of them**.
 
+For SQL databases includes configured Alembic, yay!
+
 > Note: this template is a bit opinionated
 
 ---
