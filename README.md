@@ -4,11 +4,12 @@
 
 ## The ultimate backend service template
 
-Generates a foundation for a python server on **FastAPI**, can optionally add **celery worker and celerybeat**. Uses **poetry** for dependency resolution.
+> Use with cookiecutter: `cookiecutter https://github.com/ProjectTemplates/python-backend-service.git`
+Generates a foundation for a python server based on **FastAPI**, can optionally add **celery worker and celerybeat**. Uses **poetry** for dependency resolution.
 
-*Automatically* adds dockerfiles for everything, as well as **docker-compose.yml** for development and automatic setup of all services. Also generates a simple nginx config - internal structure of the template supports creating **multiple microservices** in one repo. You can use this nginx as a *reverse proxy* to those microservices during local development.
+*Automatically* adds dockerfiles for everything, as well as **docker-compose.yml** for development and automatic setup of all services. Also generates a simple nginx config - internal structure of the template supports creating **multiple microservices** in one repository. You can use generated nginx config and container as a *reverse proxy* to those microservices during local development.
 
-or storage supports **MongoDB, PostgreSQL (or any other sql db with some tweaking) and Redis, or any combination of them**.
+For storage supports **MongoDB, PostgreSQL (or any other sql db with some tweaking) and Redis, or any combination of them**.
 
 Note: this template is a bit opinionated
 
