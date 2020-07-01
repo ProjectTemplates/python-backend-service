@@ -1,8 +1,11 @@
 {
+    "full_name": "",
+    "email": "",
     "project_name": "project",
+    "project_slug": "{{ cookiecutter.project_name|lower|replace(' ', '-') }}",
     "version": "0.1.0",
-    "database_driver": "postgresql+psycopg2",
-    "database_port": "5432",
-    "maintainer": "",
-    "maintainer_email": ""
+    "use_celery": ["No", "Yes"],
+    "use_postgres": ["Yes", "No"],
+    "use_mongo": ["No", "Yes"],
+    "use_redis": ["No", "Yes"]
 }

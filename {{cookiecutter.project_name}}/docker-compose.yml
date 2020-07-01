@@ -1,0 +1,114 @@
+version: "3.4"
+
+networks:
+  default:
+
+services:
+  nginx:
+    build:
+      context: nginx
+    container_name: {{cookiecutter.project_slug}}-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - core
+    networks:
+      - default
+
+  core: &service
+    container_name: {{cookiecutter.project_slug}}-core
+    environment:
+      - RUN_LEVEL=dev
+    entrypoint:
+      - uvicorn
+      - services.core:app
+      - --host=0.0.0.0
+      - --reload
+    build:
+      context: service
+      dockerfile: deployment/docker/Dockerfile.server
+      target: base
+      args:
+        RUN_LEVEL: dev
+    volumes:
+      - ./service:/opt/app
+    networks:
+      - default
+    restart: unless-stopped
+    depends_on: &service-dependencies
+{% if cookiecutter.use_postgres == "Yes" %}
+      - postgres
+{%- endif %}
+{% if cookiecutter.use_mongo == "Yes" %}
+      - mongo
+{%- endif %}
+{% if cookiecutter.use_redis == "Yes" %}
+      - redis
+{%- endif %}
+{% if cookiecutter.use_celery == "Yes" %}
+  celeryd: &celery
+    container_name: {{cookiecutter.project_slug}}-celeryd
+    environment:
+      - RUN_LEVEL=dev
+    build: &celery-build
+      context: service
+      dockerfile: deployment/docker/Dockerfile.celeryd
+      target: service
+      args:
+        RUN_LEVEL: production
+    networks:
+      - default
+    restart: unless-stopped
+    depends_on: *service-dependencies
+
+  celerybeat:
+    <<: *celery
+    container_name: {{cookiecutter.project_slug}}-celerybeat
+    build:
+      <<: *celery-build
+      dockerfile: deployment/docker/Dockerfile.celerybeat
+{%- endif %}
+{% if (cookiecutter.use_celery == "Yes" or cookiecutter.use_redis == "Yes") %}
+  redis:
+    container_name: {{cookiecutter.project_slug}}-redis
+    image: library/redis:6
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    networks:
+      - default
+    volumes:
+    - ./.docker_data/redis:/var/lib/redis
+{%- endif %}
+{% if cookiecutter.use_postgres == "Yes" %}
+  postgres:
+    container_name: {{cookiecutter.project_slug}}-postgres
+    image: library/postgres:13
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: user
+      POSTGRES_DB: {{cookiecutter.project_slug}}
+    networks:
+      - default
+    volumes:
+      - ./.docker_data/postgres:/var/lib/postgresql/data
+{%- endif %}
+{% if cookiecutter.use_mongo == "Yes" %}
+  mongo:
+    container_name: {{cookiecutter.project_slug}}-mongo
+    image: library/mongo:4.2
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: user
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: {{cookiecutter.project_slug}}
+    networks:
+      - default
+    volumes:
+      - ./.docker_data/mongo:/data/db
+{%- endif %}

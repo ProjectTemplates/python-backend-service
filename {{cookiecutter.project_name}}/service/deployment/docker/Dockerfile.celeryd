@@ -1,0 +1,56 @@
+# Develop image
+FROM python:3.8-slim as base
+
+ENV PIP_DISABLE_PIP_VERSION_CHECK=on
+ENV PIP_NO_CACHE_DIR=off
+ENV PYTHONDONTWRITEBYTECODE=on
+ENV PYTHONFAULTHANDLER=on
+ENV PYTHONUNBUFFERED=on
+ENV PYTHONPATH=/opt/app
+ENV POETRY_VERSION=1.0.2
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip install "poetry==$POETRY_VERSION" \
+    && poetry config virtualenvs.create false
+
+RUN mkdir /opt/app
+WORKDIR /opt/app
+
+COPY pyproject.toml poetry.loc[k] /opt/app/
+RUN poetry install $(test $RUN_LEVEL == production && echo "--no-dev") --no-interaction --no-ansi
+
+EXPOSE 8000
+
+COPY deployment/pre_start.py /opt/app/
+
+
+# Production image
+FROM base as service
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    supervisor \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY alembic /opt/app/alembic
+COPY conf /opt/app/conf
+COPY crud /opt/app/crud
+COPY database /opt/app/database
+COPY services /opt/app/services
+COPY utils /opt/app/utils
+
+COPY worker /opt/app/worker
+
+RUN mkdir -p /var/log/supervisord
+RUN mkdir -p /var/log/celery/
+
+COPY deployment/celery/beat.sh \
+     deployment/celery/supervisord.conf deployment/celery/supervisord.sh \
+     /opt/app/
+
+COPY deployment/celery/celeryd.conf /opt/app/celery.conf
+
+RUN chmod +x supervisord.sh
+CMD ["./supervisord.sh"]
