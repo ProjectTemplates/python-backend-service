@@ -5,7 +5,7 @@
     "project_slug": "{{ cookiecutter.project_name|lower|replace(' ', '-') }}",
     "version": "0.1.0",
     "use_celery": ["No", "Yes"],
-    "use_postgres": ["Yes", "No"],
+    "use_postgres": ["No", "Yes"],
     "use_mongo": ["No", "Yes"],
     "use_redis": ["No", "Yes"]
 }
