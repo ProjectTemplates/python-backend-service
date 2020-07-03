@@ -25,11 +25,11 @@ wait_seconds = 1
 )
 def init() -> None:
     try:
-{% if cookiecutter.use_postgres == "Yes" -%}
+{%- if cookiecutter.use_postgres == "Yes" %}
         pg = Session()
         pg.execute('SELECT 1')
 {%- endif %}
-{% if cookiecutter.use_mongo == "Yes" -%}
+{%- if cookiecutter.use_mongo == "Yes" %}
         mongo = Mongo()
         mongo.mongo_db.list_collections()
 {%- endif %}

@@ -46,7 +46,7 @@ COPY worker /opt/app/worker
 RUN mkdir -p /var/log/supervisord
 RUN mkdir -p /var/log/celery/
 
-COPY deployment/celery/beat.sh \
+COPY deployment/celery/worker.sh \
      deployment/celery/supervisord.conf deployment/celery/supervisord.sh \
      /opt/app/
 

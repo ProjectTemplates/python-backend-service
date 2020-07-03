@@ -41,13 +41,14 @@ services:
 {% if cookiecutter.use_postgres == "Yes" %}
       - postgres
 {%- endif %}
-{% if cookiecutter.use_mongo == "Yes" %}
+{%- if cookiecutter.use_mongo == "Yes" %}
       - mongo
 {%- endif %}
-{% if cookiecutter.use_redis == "Yes" %}
+{%- if cookiecutter.use_redis == "Yes" %}
       - redis
 {%- endif %}
-{% if cookiecutter.use_celery == "Yes" %}
+
+{%- if cookiecutter.use_celery == "Yes" %}
   celeryd: &celery
     container_name: {{cookiecutter.project_slug}}-celeryd
     environment:
@@ -70,7 +71,8 @@ services:
       <<: *celery-build
       dockerfile: deployment/docker/Dockerfile.celerybeat
 {%- endif %}
-{% if (cookiecutter.use_celery == "Yes" or cookiecutter.use_redis == "Yes") %}
+
+{%- if (cookiecutter.use_celery == "Yes" or cookiecutter.use_redis == "Yes") %}
   redis:
     container_name: {{cookiecutter.project_slug}}-redis
     image: library/redis:6
@@ -82,7 +84,8 @@ services:
     volumes:
     - ./.docker_data/redis:/var/lib/redis
 {%- endif %}
-{% if cookiecutter.use_postgres == "Yes" %}
+
+{%- if cookiecutter.use_postgres == "Yes" %}
   postgres:
     container_name: {{cookiecutter.project_slug}}-postgres
     image: library/postgres:13
@@ -97,7 +100,8 @@ services:
     volumes:
       - ./.docker_data/postgres:/var/lib/postgresql/data
 {%- endif %}
-{% if cookiecutter.use_mongo == "Yes" %}
+
+{%- if cookiecutter.use_mongo == "Yes" %}
   mongo:
     container_name: {{cookiecutter.project_slug}}-mongo
     image: library/mongo:4.2

@@ -1,14 +1,14 @@
 from typing import Generator
 
-{% if cookiecutter.use_postgres == "Yes" -%}
+{%- if cookiecutter.use_postgres == "Yes" %}
 from database import Session
 {%- endif %}
-{% if cookiecutter.use_mongo == "Yes" -%}
+{%- if cookiecutter.use_mongo == "Yes" %}
 from database import Mongo
 {%- endif %}
 
 
-{% if cookiecutter.use_postgres == "Yes" -%}
+{%- if cookiecutter.use_postgres == "Yes" %}
 # FastAPI Dependency for db session management
 def get_db() -> Generator[Session, None, None]:
     db = None
@@ -21,7 +21,7 @@ def get_db() -> Generator[Session, None, None]:
 {%- endif %}
 
 
-{% if cookiecutter.use_mongo == "Yes" -%}
+{%- if cookiecutter.use_mongo == "Yes" %}
 def get_mongo():
     mongo = None
     try:

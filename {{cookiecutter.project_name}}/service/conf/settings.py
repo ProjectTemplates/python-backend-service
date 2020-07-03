@@ -33,7 +33,7 @@ service_settings = ServiceSettings()
 
 
 
-{% if cookiecutter.use_celery == "Yes" -%}
+{%- if cookiecutter.use_celery == "Yes" %}
 class CelerySettings(BaseSettings):
     TASKS_DB: str = CELERY_TASKS_DB
     RESULT_DB: str = CELERY_RESULTS_DB
@@ -47,7 +47,7 @@ celery_settings = CelerySettings()
 
 
 
-{% if cookiecutter.use_postgres == "Yes" -%}
+{%- if cookiecutter.use_postgres == "Yes" %}
 class PostgresSettings(BaseSettings):
     NAME: str = PG_NAME
     USER: str = PG_USER
@@ -61,7 +61,7 @@ class PostgresSettings(BaseSettings):
 
 
 
-{% if cookiecutter.use_mongo == "Yes" -%}
+{%- if cookiecutter.use_mongo == "Yes" %}
 class MongoSettings(BaseSettings):
     DEFAULT_NAME: str = MONGO_DEFAULT_NAME
     USER: str = MONGO_USER
@@ -74,7 +74,7 @@ class MongoSettings(BaseSettings):
 {%- endif %}
 
 
-{% if (cookiecutter.use_celery == "Yes" or cookiecutter.use_redis == "Yes") -%}
+{%- if (cookiecutter.use_celery == "Yes" or cookiecutter.use_redis == "Yes") %}
 class RedisSettings(BaseSettings):
     HOST: str = REDIS_HOST
     PORT: str = REDIS_PORT
@@ -86,26 +86,35 @@ class RedisSettings(BaseSettings):
 {%- endif %}
 
 
-{% if cookiecutter.use_postgres == "Yes" -%}
+{%-if cookiecutter.use_postgres == "Yes" %}
 pg_settings = PostgresSettings()
 {%- endif %}
-{% if (cookiecutter.use_celery == "Yes" or cookiecutter.use_redis == "Yes") -%}
+{%- if (cookiecutter.use_celery == "Yes" or cookiecutter.use_redis == "Yes") %}
 redis_settings = RedisSettings()
 {%- endif %}
-{% if cookiecutter.use_mongo == "Yes" -%}
+{%- if cookiecutter.use_mongo == "Yes" %}
 mongo_settings = MongoSettings()
 {%- endif %}
 
 
 def uri_maker(conf_object, driver):
     def make_uri(
-        user: str = conf_object.USER,
-        password: str = conf_object.PASSWORD,
+        user: Optional[str] = conf_object.USER,
+        password: Optional[str] = conf_object.PASSWORD,
         host: str = conf_object.HOST,
         port: str = conf_object.PORT,
         db: Optional[str] = getattr(conf_object, 'NAME', None),
     ) -> str:
-        connection_string = f'{driver}://{user}:{password}@{host}:{port}'
+        if user:
+            if password:
+                auth = f'{user}:{password}'
+            else:
+                auth = user
+            auth += '@'
+        else:
+            auth = ''
+
+        connection_string = f'{driver}://{auth}{host}:{port}'
         if db:
             connection_string += f'/{db}'
         return connection_string
@@ -113,22 +122,22 @@ def uri_maker(conf_object, driver):
     return make_uri
 
 
-{% if cookiecutter.use_postgres == "Yes" -%}
+{%- if cookiecutter.use_postgres == "Yes" %}
 make_pg_uri = uri_maker(pg_settings, 'postgresql+psycopg2')
 {%- endif %}
-{% if cookiecutter.use_mongo == "Yes" -%}
+{%- if cookiecutter.use_mongo == "Yes" %}
 make_mongo_uri = uri_maker(mongo_settings, 'mongodb')
 {%- endif %}
-{% if (cookiecutter.use_celery == "Yes" or cookiecutter.use_redis == "Yes") -%}
+{%- if (cookiecutter.use_celery == "Yes" or cookiecutter.use_redis == "Yes") %}
 make_redis_uri = uri_maker(redis_settings, 'redis')
 {%- endif %}
 
-{% if cookiecutter.use_postgres == "Yes" -%}
+{%- if cookiecutter.use_postgres == "Yes" %}
 PG_URI = make_pg_uri()
 {%- endif %}
-{% if cookiecutter.use_mongo == "Yes" -%}
+{%- if cookiecutter.use_mongo == "Yes" %}
 MONGO_URI = make_mongo_uri()
 {%- endif %}
-{% if (cookiecutter.use_celery == "Yes" or cookiecutter.use_redis == "Yes") -%}
+{%- if (cookiecutter.use_celery == "Yes" or cookiecutter.use_redis == "Yes") %}
 REDIS_URL = make_redis_uri()
 {%- endif %}
