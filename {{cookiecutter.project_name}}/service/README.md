@@ -9,8 +9,4 @@ Microservices guidelines:
 - Создать в server/services папку для нового сервиса, по образу core
 - Из других пакетов делать абсолютные импорты
 - Внутри сервиса можно использовать относительные
-- Для разработки - добавить сервис в docker-compose.dev.yml в backend, по образу сервиса server-core
-
-## TODO
-
-- Отдельный pyproject.toml и poetry.lock для каждого микросервиса (пока что они общие)
+- Для разработки - добавить сервис в docker-compose.yml в backend, по образу сервиса core
